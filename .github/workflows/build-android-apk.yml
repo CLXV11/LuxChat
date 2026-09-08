@@ -8,6 +8,8 @@ permissions:
 
 env:
   EXPO_PUBLIC_DOMAIN: luxury-chat-hub--faddytu.replit.app
+  NODE_ENV: production
+  NODE_OPTIONS: "--max-old-space-size=4096"
 
 jobs:
   build-android:
@@ -48,7 +50,7 @@ jobs:
 
       - name: Build release APK
         working-directory: artifacts/mobile/android
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleRelease -x lint --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
