@@ -9,7 +9,7 @@ permissions:
 env:
   EXPO_PUBLIC_DOMAIN: luxury-chat-hub--faddytu.replit.app
   NODE_ENV: production
-  NODE_OPTIONS: "--max-old-space-size=4096"
+  CI: true
 
 jobs:
   build-android:
@@ -41,16 +41,18 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install workspace dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install
 
-      - name: Generate native Android project
+      - name: Prebuild Expo Mobile Project
         working-directory: artifacts/mobile
-        run: pnpm exec expo prebuild --platform android --non-interactive --no-install
+        run: |
+          pnpm install
+          npx expo prebuild --platform android --no-install
 
       - name: Build release APK
         working-directory: artifacts/mobile/android
-        run: ./gradlew assembleRelease -x lint --no-daemon
+        run: ./gradlew assembleRelease --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
